@@ -11,12 +11,10 @@ logo = Image.open("USA_Baseball_team_logo.png")
 # Display logo
 st.image(logo, width=200)  # Adjust width as needed
 
-st.title("PDP Premier Dashboard")
-
 # Load CSV
 df = pd.read_csv("pdp_premier.csv")
 
-st.title("PDP Premier Dashboard")
+st.title("PDP Premier Players Dashboard")
 
 # Convert "30 Total" to numeric just in case it's read as a string
 df["30 Total"] = pd.to_numeric(df["30 Total"], errors="coerce")
