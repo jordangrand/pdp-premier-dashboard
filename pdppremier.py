@@ -1,42 +1,44 @@
 import pandas as pd
 import streamlit as st
-
 from PIL import Image
-import streamlit as st
-import pandas as pd
 
-# Load logo image
+# Load and display logo
 logo = Image.open("USA_Baseball_team_logo.png")
-
-# Display logo
 st.image(logo, width=200)  # Adjust width as needed
+
+st.title("PDP Premier Players Dashboard")
 
 # Load CSV
 df = pd.read_csv("pdp_premier.csv")
 
-st.title("PDP Premier Players Dashboard")
+# Rename "Year" to "HS Grad Year"
+df = df.rename(columns={"Year": "HS Grad Year"})
 
-# Convert "30 Total" to numeric just in case it's read as a string
+# Drop unnecessary columns
+df = df.drop(columns=["Last Name", "First Name", "BirthDate"], errors="ignore")
+
+# Ensure "30 Total" is numeric
 df["30 Total"] = pd.to_numeric(df["30 Total"], errors="coerce")
 
-# Drop rows with missing key values
-df = df.dropna(subset=["NAME", "Location", "Year", "Event", "Event Type", "30 Total"])
+# Drop rows with missing values in key columns
+df = df.dropna(subset=["NAME", "Location", "HS Grad Year", "Event", "Event Type", "30 Total"])
 
 # Sidebar Filters
 st.sidebar.header("Filter Player Data")
 
 location = st.sidebar.selectbox("Select Location", ["All"] + sorted(df["Location"].unique()))
 name = st.sidebar.selectbox("Select Player", ["All"] + sorted(df["NAME"].unique()))
-year = st.sidebar.selectbox("Select Year", ["All"] + sorted(df["Year"].unique()))
+grad_year = st.sidebar.selectbox("Select HS Grad Year", ["All"] + sorted(df["HS Grad Year"].unique()))
 event = st.sidebar.selectbox("Select Event", ["All"] + sorted(df["Event"].unique()))
 event_type = st.sidebar.selectbox("Select Event Type", ["All"] + sorted(df["Event Type"].unique()))
 
 # Slider for 30 Total
-min_30 = round(float(df["30 Total"].min()), 2)
-max_30 = round(float(df["30 Total"].max()), 2)
-avg_30 = round(float(df["30 Total"].mean()), 2)
+min_30 = round(df["30 Total"].min(), 2)
+max_30 = round(df["30 Total"].max(), 2)
+avg_30 = round(df["30 Total"].mean(), 2)
 
 st.sidebar.markdown(f"**Average 30 Total: {avg_30} sec**")
+
 thirty_total_range = st.sidebar.slider(
     "30 Total Range (sec)",
     min_value=min_30,
@@ -54,8 +56,8 @@ if location != "All":
 if name != "All":
     filtered_df = filtered_df[filtered_df["NAME"] == name]
 
-if year != "All":
-    filtered_df = filtered_df[filtered_df["Year"] == year]
+if grad_year != "All":
+    filtered_df = filtered_df[filtered_df["HS Grad Year"] == grad_year]
 
 if event != "All":
     filtered_df = filtered_df[filtered_df["Event"] == event]
@@ -70,4 +72,5 @@ filtered_df = filtered_df[
 ]
 
 # Show result
+st.subheader("Filtered Results")
 st.dataframe(filtered_df)
