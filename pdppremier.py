@@ -72,5 +72,4 @@ filtered_df = filtered_df[
 ]
 
 # Show result
-st.subheader("Filtered Results")
 st.dataframe(filtered_df)
