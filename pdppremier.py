@@ -1,6 +1,18 @@
 import pandas as pd
 import streamlit as st
 
+from PIL import Image
+import streamlit as st
+import pandas as pd
+
+# Load logo image
+logo = Image.open("USA_Baseball_team_logo.png")
+
+# Display logo
+st.image(logo, width=200)  # Adjust width as needed
+
+st.title("PDP Premier Dashboard")
+
 # Load CSV
 df = pd.read_csv("pdp_premier.csv")
 
