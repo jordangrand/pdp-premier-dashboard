@@ -1,17 +1,20 @@
 import pandas as pd
 import streamlit as st
 
-# Load your CSV
+# Load CSV
 df = pd.read_csv("pdp_premier.csv")
 
 st.title("PDP Premier Dashboard")
 
-# Filters
-team = st.selectbox("Select Team", sorted(df["team"].dropna().unique()))
-position = st.selectbox("Select Position", sorted(df["primary_position"].dropna().unique()))
+# Show available columns (optional for debugging)
+st.write("Columns:", df.columns.tolist())
 
-# Filtered Table
-filtered_df = df[(df["team"] == team) & (df["primary_position"] == position)]
+# Dropdown filters using actual columns
+event = st.selectbox("Select Event", sorted(df["Event"].dropna().unique()))
+position = st.selectbox("Select Position", sorted(df["Position"].dropna().unique()))
+
+# Filtered DataFrame
+filtered_df = df[(df["Event"] == event) & (df["Position"] == position)]
 
 st.subheader("Filtered Player Data")
 st.dataframe(filtered_df)
